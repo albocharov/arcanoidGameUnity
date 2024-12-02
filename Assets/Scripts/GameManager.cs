@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -26,10 +27,9 @@ public class GameManager : MonoBehaviour
 
     public GameObject[] boosterPrefabs;
 
-    [SerializeField] private TextMeshPro healthText;
-    public TextMeshPro bricksText;
-
-
+    [SerializeField] private GameObject[] healthSprites; // Массив для хранения спрайтов сердечек
+    [SerializeField] private Sprite inactiveHeartSprite; // Спрайт для неактивного сердца
+    public TextMeshProUGUI bricksText; // Изменено на TextMeshProUGUI
 
     private void Awake()
     {
@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
     public void TakeHealth(int count)
     {
         currentHealth -= count;
-        healthText.text = "Жизни: " + currentHealth.ToString();
+        UpdateHealthSprites();
         SoundsBaseCollection.Instance.damageSound.Play();
         if (currentHealth <= 0)
         {
@@ -73,6 +73,22 @@ public class GameManager : MonoBehaviour
         else
         {
             SpawnBall();
+        }
+    }
+
+    private void UpdateHealthSprites()
+    {
+        for (int i = 0; i < healthSprites.Length; i++)
+        {
+            if (i < currentHealth)
+            {
+                healthSprites[i].SetActive(true);
+            }
+            else
+            {
+                healthSprites[i].SetActive(true);
+                healthSprites[i].GetComponent<Image>().sprite = inactiveHeartSprite; // Неактивное сердце
+            }
         }
     }
 
@@ -96,4 +112,3 @@ public class GameManager : MonoBehaviour
         SoundsBaseCollection.Instance.winSound.Play();
     }
 }
-
